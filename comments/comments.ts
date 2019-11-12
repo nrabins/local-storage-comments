@@ -1,6 +1,3 @@
-/**
- * This library uses local storage to allow for the saving and recovery of comments
- */
 
 /**
  * A basic comment, has a comment string.
@@ -10,6 +7,9 @@ interface Comment {
   comment: string
 }
 
+/**
+ * This library uses local storage to allow for the saving and recovery of comments
+ */
 class CommentSection {
 
   private comments = [] as Comment[];
@@ -55,7 +55,7 @@ class CommentSection {
 
     if (this.comments.length > 0) {
       this.comments.forEach(comment => {
-        this.addComment(comment);
+        this.addCommentEl(comment);
       });
       this.noCommentsEl.setAttribute('hidden', 'true');
     } else {
@@ -72,11 +72,9 @@ class CommentSection {
     }
   }
 
-  private addComment(comment: Comment): any {
-    const commentEl = CommentSection.makeCommentEl(comment);
-    this.oldCommentsEl.appendChild(commentEl);
-
+  private addComment(comment: Comment): void {
     this.comments.push(comment);
+    this.addCommentEl(comment);
   }
 
   private onSave(): void {
@@ -87,6 +85,11 @@ class CommentSection {
       this.persistComments();
       this.newCommentsEl.value = '';
     }
+  }
+
+  private addCommentEl(comment: Comment): void {
+    const commentEl = CommentSection.makeCommentEl(comment);
+    this.oldCommentsEl.appendChild(commentEl);
   }
 
   private static makeCommentEl(comment: Comment): HTMLDivElement {

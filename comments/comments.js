@@ -30,7 +30,7 @@ var CommentSection = (function () {
         this.loadComments();
         if (this.comments.length > 0) {
             this.comments.forEach(function (comment) {
-                _this.addComment(comment);
+                _this.addCommentEl(comment);
             });
             this.noCommentsEl.setAttribute('hidden', 'true');
         }
@@ -46,9 +46,8 @@ var CommentSection = (function () {
         }
     };
     CommentSection.prototype.addComment = function (comment) {
-        var commentEl = CommentSection.makeCommentEl(comment);
-        this.oldCommentsEl.appendChild(commentEl);
         this.comments.push(comment);
+        this.addCommentEl(comment);
     };
     CommentSection.prototype.onSave = function () {
         var commentText = this.newCommentsEl.value;
@@ -58,6 +57,10 @@ var CommentSection = (function () {
             this.persistComments();
             this.newCommentsEl.value = '';
         }
+    };
+    CommentSection.prototype.addCommentEl = function (comment) {
+        var commentEl = CommentSection.makeCommentEl(comment);
+        this.oldCommentsEl.appendChild(commentEl);
     };
     CommentSection.makeCommentEl = function (comment) {
         var commentEl = document.createElement('div');
