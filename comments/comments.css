@@ -4,3 +4,49 @@
   justify-content: center;
   align-items: center;
 }
+
+/* New comment form */
+#comments-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#comments-form > * {
+  margin: 5px;
+}
+
+/* Comment Cards */
+.comments-comment {
+  width: 400px;
+  margin: 10px;
+  padding: 10px;
+  border: solid rgb(182, 182, 182) 1px;
+  
+  display: flex;
+
+  box-shadow: 0px 3px 5px 0px rgba(193, 193, 193, 0.13);
+
+  transition: all 1s;
+  opacity: 1;
+  transform: translateY(0px);
+}
+
+.comments-comment.hidden {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+
+.comments-comment-name {
+  font-weight: bold;
+}
+
+.comments-comment-date {
+  font-style: italic;
+  font-size: .8em;
+  margin-top: .4em;
+}
+
+.comments-comment-text {
+  padding: 0 30px;
+}
+

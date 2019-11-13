@@ -6,23 +6,14 @@ var CommentSection = (function () {
         this.storageKey = storageKey;
         this.comments = [];
         this.commentSectionEl.classList.add('comments-section');
-        this.noCommentsEl = document.createElement('div');
-        this.noCommentsEl.classList.add('comments-no-comments');
-        this.noCommentsEl.innerText = 'No comments yet';
-        this.noCommentsEl.setAttribute('hidden', 'true');
-        this.oldCommentsEl = document.createElement('div');
-        this.oldCommentsEl.classList.add('comments-old-comments');
-        this.newCommentsEl = document.createElement('textarea');
-        this.newCommentsEl.classList.add('comments-new-comment');
-        this.newCommentsEl.setAttribute('placeholder', 'Leave a comment!');
-        this.saveCommentBtn = document.createElement('button');
-        this.saveCommentBtn.classList.add('comments-save');
-        this.saveCommentBtn.innerText = 'Save';
-        this.saveCommentBtn.addEventListener('click', function () { return _this.onSave(); });
-        this.commentSectionEl.appendChild(this.noCommentsEl);
-        this.commentSectionEl.appendChild(this.oldCommentsEl);
-        this.commentSectionEl.appendChild(this.newCommentsEl);
-        this.commentSectionEl.appendChild(this.saveCommentBtn);
+        var template = "\n      <form id='comments-form' class='comments-form'>\n        <div id='comments-form-name-container'>\n          <input type='text' id='comments-name' class='comments-name' maxlength='32' placeholder='Your name'/>\n        </div>\n        <textarea id='comments-new-comment' maxlength='500' placeholder='Leave a comment!'></textarea>\n        <button type='submit'>Save Comment</button>\n      </form>\n      <div id='comments-no-comments' hidden>No comments yet</div>\n      <div id='comments-old-comments'></div>\n    ";
+        this.commentSectionEl.innerHTML = template;
+        this.form = document.getElementById('comments-form');
+        this.noCommentsEl = document.getElementById('comments-no-comments');
+        this.oldCommentsEl = document.getElementById('comments-old-comments');
+        this.nameEl = document.getElementById('comments-name');
+        this.newCommentEl = document.getElementById('comments-new-comment');
+        this.form.addEventListener('submit', function (e) { return _this.onSave(e); });
         this.loadAndRenderComments();
     }
     CommentSection.prototype.loadAndRenderComments = function () {
@@ -38,6 +29,11 @@ var CommentSection = (function () {
             this.noCommentsEl.removeAttribute('hidden');
         }
     };
+    CommentSection.prototype.addCommentEl = function (comment) {
+        var commentEl = CommentSection.makeCommentEl(comment);
+        this.oldCommentsEl.appendChild(commentEl);
+        setTimeout(function () { return commentEl.classList.remove('hidden'); }, 0);
+    };
     CommentSection.prototype.loadComments = function () {
         this.comments = [];
         var commentStr = window.localStorage.getItem(this.storageKey);
@@ -49,26 +45,30 @@ var CommentSection = (function () {
         this.comments.push(comment);
         this.addCommentEl(comment);
     };
-    CommentSection.prototype.onSave = function () {
-        var commentText = this.newCommentsEl.value;
-        if (commentText.trim().length > 0) {
-            var comment = { comment: commentText };
+    CommentSection.prototype.onSave = function (ev) {
+        ev.preventDefault();
+        var commentText = this.newCommentEl.value;
+        var nameText = this.nameEl.value;
+        if (this.canSaveComment(nameText, commentText)) {
+            var comment = { name: nameText, comment: commentText, timeStamp: new Date().toLocaleDateString() };
             this.addComment(comment);
             this.persistComments();
-            this.newCommentsEl.value = '';
+            this.nameEl.value = '';
+            this.newCommentEl.value = '';
         }
     };
-    CommentSection.prototype.addCommentEl = function (comment) {
-        var commentEl = CommentSection.makeCommentEl(comment);
-        this.oldCommentsEl.appendChild(commentEl);
-    };
-    CommentSection.makeCommentEl = function (comment) {
-        var commentEl = document.createElement('div');
-        commentEl.innerText = comment.comment;
-        return commentEl;
+    CommentSection.prototype.canSaveComment = function (nameText, commentText) {
+        return nameText.trim().length > 0 && commentText.trim().length > 0;
     };
     CommentSection.prototype.persistComments = function () {
         window.localStorage.setItem(this.storageKey, JSON.stringify(this.comments));
+    };
+    CommentSection.makeCommentEl = function (comment) {
+        var commentEl = document.createElement('div');
+        commentEl.classList.add('comments-comment', 'hidden');
+        commentEl.innerHTML =
+            "\n      <div class='comments-comment-metadata'>\n        <div class='comments-comment-name'>" + comment.name + "</div>\n        <div class='comments-comment-date'>" + comment.timeStamp + "</div>\n      </div>\n      <span class='comments-comment-text'>" + comment.comment + "</span>\n    ";
+        return commentEl;
     };
     return CommentSection;
 }());

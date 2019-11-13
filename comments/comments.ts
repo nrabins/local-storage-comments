@@ -3,7 +3,8 @@
  * A basic comment, has a comment string.
  */
 interface Comment {
-  // name: string,
+  name: string,
+  timeStamp: string,
   comment: string
 }
 
@@ -14,38 +15,37 @@ class CommentSection {
 
   private comments = [] as Comment[];
 
+  private form: HTMLFormElement;
   private noCommentsEl: HTMLDivElement;
   private oldCommentsEl: HTMLDivElement;
-  private newCommentsEl: HTMLTextAreaElement;
-  private saveCommentBtn: HTMLButtonElement;
+  private nameEl: HTMLInputElement;
+  private newCommentEl: HTMLTextAreaElement;
 
   constructor(private commentSectionEl: HTMLDivElement, private storageKey: string = 'COMMENT_STORAGE') {
 
     this.commentSectionEl.classList.add('comments-section');
 
-    // Create the elements that will be added to the page on init
-    this.noCommentsEl = document.createElement('div');
-    this.noCommentsEl.classList.add('comments-no-comments');
-    this.noCommentsEl.innerText = 'No comments yet';
-    this.noCommentsEl.setAttribute('hidden', 'true');
+    const template = `
+      <form id='comments-form' class='comments-form'>
+        <div id='comments-form-name-container'>
+          <input type='text' id='comments-name' class='comments-name' maxlength='32' placeholder='Your name'/>
+        </div>
+        <textarea id='comments-new-comment' maxlength='500' placeholder='Leave a comment!'></textarea>
+        <button type='submit'>Save Comment</button>
+      </form>
+      <div id='comments-no-comments' hidden>No comments yet</div>
+      <div id='comments-old-comments'></div>
+    `
 
-    this.oldCommentsEl = document.createElement('div');
-    this.oldCommentsEl.classList.add('comments-old-comments')
+    this.commentSectionEl.innerHTML = template;
 
-    this.newCommentsEl = document.createElement('textarea');
-    this.newCommentsEl.classList.add('comments-new-comment');
-    this.newCommentsEl.setAttribute('placeholder', 'Leave a comment!');
+    this.form = document.getElementById('comments-form') as HTMLFormElement;
+    this.noCommentsEl = document.getElementById('comments-no-comments') as HTMLDivElement;
+    this.oldCommentsEl = document.getElementById('comments-old-comments') as HTMLDivElement;
+    this.nameEl = document.getElementById('comments-name') as HTMLInputElement;
+    this.newCommentEl = document.getElementById('comments-new-comment') as HTMLTextAreaElement;
 
-    this.saveCommentBtn = document.createElement('button');
-    this.saveCommentBtn.classList.add('comments-save');
-    this.saveCommentBtn.innerText = 'Save';
-    this.saveCommentBtn.addEventListener('click', () => this.onSave());
-
-    // Add the elements to the document
-    this.commentSectionEl.appendChild(this.noCommentsEl);
-    this.commentSectionEl.appendChild(this.oldCommentsEl);
-    this.commentSectionEl.appendChild(this.newCommentsEl);
-    this.commentSectionEl.appendChild(this.saveCommentBtn);
+    this.form.addEventListener('submit', e => this.onSave(e));
 
     this.loadAndRenderComments();
   }
@@ -63,6 +63,12 @@ class CommentSection {
     }
   }
 
+  private addCommentEl(comment: Comment): void {
+    const commentEl = CommentSection.makeCommentEl(comment);
+    this.oldCommentsEl.appendChild(commentEl);
+    setTimeout(()=>commentEl.classList.remove('hidden'), 0);
+  }
+
   private loadComments(): void {
     this.comments = [] as Comment[];
 
@@ -77,29 +83,42 @@ class CommentSection {
     this.addCommentEl(comment);
   }
 
-  private onSave(): void {
-    const commentText = this.newCommentsEl.value;
-    if (commentText.trim().length > 0) {
-      const comment = { comment: commentText } as Comment;
+  private onSave(ev: Event): void {
+    ev.preventDefault();
+    const commentText = this.newCommentEl.value;
+    const nameText = this.nameEl.value;
+
+    if (this.canSaveComment(nameText, commentText)) {
+      const comment = { name: nameText, comment: commentText, timeStamp: new Date().toLocaleDateString() } as Comment;
       this.addComment(comment);
       this.persistComments();
-      this.newCommentsEl.value = '';
+      this.nameEl.value = '';
+      this.newCommentEl.value = '';
     }
   }
 
-  private addCommentEl(comment: Comment): void {
-    const commentEl = CommentSection.makeCommentEl(comment);
-    this.oldCommentsEl.appendChild(commentEl);
-  }
-
-  private static makeCommentEl(comment: Comment): HTMLDivElement {
-    const commentEl = document.createElement('div');
-    commentEl.innerText = comment.comment;
-    return commentEl;
+  private canSaveComment(nameText: string, commentText: string): boolean {
+    return nameText.trim().length > 0 && commentText.trim().length > 0;
   }
 
   private persistComments() {
     window.localStorage.setItem(this.storageKey, JSON.stringify(this.comments));
   }
+
+  private static makeCommentEl(comment: Comment): HTMLDivElement {
+    const commentEl = document.createElement('div');
+    commentEl.classList.add('comments-comment', 'hidden');
+
+    commentEl.innerHTML =
+    `
+      <div class='comments-comment-metadata'>
+        <div class='comments-comment-name'>${comment.name}</div>
+        <div class='comments-comment-date'>${comment.timeStamp}</div>
+      </div>
+      <span class='comments-comment-text'>${comment.comment}</span>
+    `
+    return commentEl;
+  }
+
 
 }
