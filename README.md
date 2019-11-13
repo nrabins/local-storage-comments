@@ -20,7 +20,7 @@ You'll need to use the comments.css stylesheet in order to make things look righ
 ```
 
 ### Step 3: Add the javascript code
-Use the `<script>` element to load the javascript library (the `comments.js` file). Then use another `<script>` element to initialize the slideshow. The following code snippet shows how to load the library from another server and initialize it.
+Use the `<script>` element to load the javascript library (the `comments.js` file). Then use another `<script>` element to initialize the comments section. The following code snippet shows how to load the library from another server and initialize it.
 
 It's best to add javascript code at the end of your `<body>` element (just before the `</body>` closing tag).
 
@@ -29,7 +29,7 @@ It's best to add javascript code at the end of your `<body>` element (just befor
 <script>new CommentSection(document.getElementById('my-comments-section'));</script>
 ```
 
-The text in parentheses on the 2nd line is a ID selector for the comments container element. If your slideshow container has the class name `"my-comments-section"`, you would use `'.my-comments-section'` for the part in parentheses.
+The text in parentheses on the 2nd line is a ID selector for the comments container element. If your comments section container has the class name `"my-comments-section"`, you would use `'.my-comments-section'` for the part in parentheses.
 
 Optionally, you can provide a second parameter to specify the localStorage key associated with this comment section. This is useful if you wish to have comment sections on multiple pages.
 
