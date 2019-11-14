@@ -10,7 +10,7 @@ All you need to create in your HTML is a `div` with a unique id.
 <div id="my-comments-section"></div>
 ```
 
-The script that runs injects an html structure and a listener that handles the save comment button click.
+The script that runs injects an html structure and a [listener](https://developer.mozilla.org/en-US/docs/Web/API/EventListener) that handles the save comment button click.
 
 ### Step 2: Add the stylesheet
 You'll need to use the comments.css stylesheet in order to make things look right. Add the stylesheet in the `<head>` element, before your own website's stylesheets. This code snippet shows how to load the comments.css stylesheet that's hosted on another server so you don't have to download it:
