@@ -74,6 +74,14 @@ The script from step 3 will inject html into your div. This html will look somet
 
 If you want to add custom styling, you'll need to add style rules in a .css file targeting the generated html.
 
+Example:
+```css
+/* Change the card border to purple */
+.comments-comment {
+  border-color: rebecca-purple;
+}
+```
+
 ## A note about local storage
 Local storage can be viewed by going into the dev tools (F12) and selecting the Application tab. From this tab, you can view the contents of the one or more comment sections you've created and clear them out/modify them as desired.
 
