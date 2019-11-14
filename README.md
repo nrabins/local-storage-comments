@@ -16,7 +16,7 @@ The script that runs injects an html structure and listeners
 You'll need to use the comments.css stylesheet in order to make things look right. Add the stylesheet in the `<head>` element, before your own website's stylesheets. This code snippet shows how to load the comments.css stylesheet that's hosted on another server so you don't have to download it:
 
 ```html
-<link rel="stylesheet" type="text/css" href="https://raw.githubusercontent.com/nrabins/local-storage-comments/master/comments/comments.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/nrabins/local-storage-comments@master/comments/comments.css">
 ```
 
 ### Step 3: Add the javascript code
@@ -25,7 +25,7 @@ Use the `<script>` element to load the javascript library (the `comments.js` fil
 It's best to add javascript code at the end of your `<body>` element (just before the `</body>` closing tag).
 
 ```html
-<script src="https://raw.githubusercontent.com/nrabins/local-storage-comments/master/comments/comments.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/nrabins/local-storage-comments@master/comments/comments.js"></script>
 <script>new CommentSection(document.getElementById('my-comments-section'));</script>
 ```
 
